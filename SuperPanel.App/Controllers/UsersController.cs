@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SuperPanel.App.Data;
+using X.PagedList;
 
 namespace SuperPanel.App.Controllers
 {
@@ -15,12 +16,17 @@ namespace SuperPanel.App.Controllers
             _userRepository = userRepository;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
-            var users = _userRepository.QueryAll();
-            return View(users);
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            var users = _userRepository.QueryAll(pageNumber, pageSize);
+            return View(users.ToPagedList(pageNumber, pageSize));
         }
 
-
+        public IActionResult Delete(long id)
+        {
+            return NoContent();
+        }
     }
 }
