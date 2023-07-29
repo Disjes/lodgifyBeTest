@@ -1,6 +1,4 @@
-﻿@model X.PagedList.IPagedList<User>
-@using X.PagedList.Mvc.Core
-<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+﻿@model IEnumerable<User>
 
 @{
     ViewData["Title"] = "User's list";
@@ -10,12 +8,12 @@
 <table class="table">
 
     <thead>
-    <tr>
-        <th>#</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Created at</th>
-    </tr>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Created at</th>
+        </tr>
     </thead>
     @foreach (var u in Model)
     {
@@ -27,7 +25,3 @@
         </tr>
     }
 </table>
-Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-
-@Html.PagedListPager(Model, page => Url.Action("Index", 
-    new { page }))
