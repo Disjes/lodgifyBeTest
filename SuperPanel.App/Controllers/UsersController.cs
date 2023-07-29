@@ -15,12 +15,17 @@ namespace SuperPanel.App.Controllers
             _userRepository = userRepository;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
-            var users = _userRepository.QueryAll();
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            var users = _userRepository.QueryAll(pageNumber, pageSize);
             return View(users);
         }
 
-
+        public IActionResult Delete(long id)
+        {
+            return NoContent();
+        }
     }
 }
