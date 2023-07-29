@@ -21,7 +21,7 @@ namespace SuperPanel.App.Controllers
             int pageSize = 3;
             int pageNumber = (page ?? 1);
             var users = _userRepository.QueryAll(pageNumber, pageSize);
-            return View(users.ToPagedList(pageNumber, pageSize));
+            return View(users);
         }
 
         public IActionResult Delete(long id)
