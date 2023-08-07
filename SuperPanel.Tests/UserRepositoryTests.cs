@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
-using SuperPanel.App.Data;
-using SuperPanel.App.Infrastructure;
 using System.Linq;
+using Infrastructure.Models;
+using Infrastructure.Repositories;
 using Xunit;
 
 namespace SuperPanel.Tests

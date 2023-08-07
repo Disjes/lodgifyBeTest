@@ -1,0 +1,10 @@
+C:\Users\David\Documents\sources\repos\lodgify\Infrastructure\bin\Debug\netcoreapp3.1\Infrastructure.deps.json
+C:\Users\David\Documents\sources\repos\lodgify\Infrastructure\bin\Debug\netcoreapp3.1\Infrastructure.dll
+C:\Users\David\Documents\sources\repos\lodgify\Infrastructure\bin\Debug\netcoreapp3.1\Infrastructure.pdb
+C:\Users\David\Documents\sources\repos\lodgify\Infrastructure\obj\Debug\netcoreapp3.1\Infrastructure.csproj.AssemblyReference.cache
+C:\Users\David\Documents\sources\repos\lodgify\Infrastructure\obj\Debug\netcoreapp3.1\Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\David\Documents\sources\repos\lodgify\Infrastructure\obj\Debug\netcoreapp3.1\Infrastructure.AssemblyInfoInputs.cache
+C:\Users\David\Documents\sources\repos\lodgify\Infrastructure\obj\Debug\netcoreapp3.1\Infrastructure.AssemblyInfo.cs
+C:\Users\David\Documents\sources\repos\lodgify\Infrastructure\obj\Debug\netcoreapp3.1\Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\David\Documents\sources\repos\lodgify\Infrastructure\obj\Debug\netcoreapp3.1\Infrastructure.dll
+C:\Users\David\Documents\sources\repos\lodgify\Infrastructure\obj\Debug\netcoreapp3.1\Infrastructure.pdb

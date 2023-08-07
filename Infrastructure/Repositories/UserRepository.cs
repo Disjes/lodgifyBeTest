@@ -1,19 +1,10 @@
-﻿using Microsoft.Extensions.Options;
-using SuperPanel.App.Infrastructure;
-using SuperPanel.App.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
+﻿using System.Text.Json;
+using Infrastructure.Models;
+using Microsoft.Extensions.Options;
 using X.PagedList;
 
-namespace SuperPanel.App.Data
+namespace Infrastructure.Repositories
 {
-    public interface IUserRepository
-    {
-        IEnumerable<User> QueryAll();
-        IPagedList<User> QueryAll(int pageNumber, int pageSize);
-    }
-
     public class UserRepository : IUserRepository
     {
         private List<User> _users;
@@ -26,14 +17,20 @@ namespace SuperPanel.App.Data
                 .ToList();
         }
 
-        public IEnumerable<User> QueryAll()
+        public async Task<IEnumerable<User>> QueryAll()
         {
             return _users;
         }
 
-        public IPagedList<User> QueryAll(int pageNumber, int pageSize)
+        public async Task<IPagedList<User>> QueryAll(int pageNumber, int pageSize)
         {
             return _users.ToPagedList(pageNumber, pageSize);
+        }
+
+        public void Remove(long id)
+        {
+            var user = _users.Find(u => u.Id == id);
+            _users.Remove(user);
         }
 
     }

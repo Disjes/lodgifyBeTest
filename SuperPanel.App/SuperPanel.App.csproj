@@ -16,4 +16,13 @@
     <PackageReference Include="X.PagedList.Mvc.Core" Version="7.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data" />
+  </ItemGroup>
+
 </Project>

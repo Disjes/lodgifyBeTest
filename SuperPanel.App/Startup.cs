@@ -4,12 +4,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SuperPanel.App.Data;
-using SuperPanel.App.Infrastructure;
-using SuperPanel.App.Models;
 using System;
 using System.Linq;
 using System.Text.Json;
+using Infrastructure.Models;
+using Infrastructure.Repositories;
+using Services.Models;
+using Services.Services;
+using SuperPanel.App.Models;
+using User = Infrastructure.Models.User;
 
 namespace SuperPanel.App
 {
@@ -31,9 +34,14 @@ namespace SuperPanel.App
             services.AddControllersWithViews();
             services.AddOptions();
             services.Configure<DataOptions>(options => Configuration.GetSection("Data").Bind(options));
+            services.Configure<Misc>(options => Configuration.GetSection("Misc").Bind(options));
+            services.Configure<ExternalContactsApiOptions>(options => Configuration.GetSection("ExternalContactsApi")
+                .Bind(options));
 
             // Data
-            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IContactsApiClient, ContactsApiClient>();
+            services.AddScoped<IContactsService, ContactsService>();
         }
 
 
@@ -51,6 +59,7 @@ namespace SuperPanel.App
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -62,6 +71,7 @@ namespace SuperPanel.App
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Users}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
         }
 
