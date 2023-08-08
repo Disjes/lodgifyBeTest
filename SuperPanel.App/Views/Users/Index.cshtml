@@ -1,19 +1,32 @@
-﻿@model IEnumerable<User>
+﻿@model X.PagedList.IPagedList<Infrastructure.Models.User>
+@using X.PagedList.Mvc.Core
 
 @{
     ViewData["Title"] = "User's list";
 }
 
+<div class="container">
+    <div class="modal" id="spinnerModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <div class="spinner-border text-primary" role="status"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
 
 <table class="table">
 
     <thead>
-        <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Created at</th>
-        </tr>
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Created at</th>
+        <th></th>
+    </tr>
     </thead>
     @foreach (var u in Model)
     {
@@ -22,6 +35,49 @@
             <td>@u.FirstName @u.LastName</td>
             <td>@u.Email</td>
             <td>@u.CreatedAt</td>
+            <td><button onclick="deleteItem(@u.Id)">Delete</button></td>
         </tr>
     }
 </table>
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index", 
+    new { page }), new PagedListRenderOptions {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+    })
+
+@section Scripts {
+    <script>        
+        const spinnerModal = new bootstrap.Modal(document.getElementById('spinnerModal'));
+        async function deleteItem(itemId) {
+            if (confirm("Are you sure you want to delete this item?")) {
+                try {
+                    spinnerModal.show();
+                    await fetch(`@Url.Action("Delete", "Users", null, "https")/${itemId}`, {
+                        method: 'DELETE'
+                    }).then(response => {
+                        // Check if the response is "ok" (status code 200-299)
+                        if (!response.ok) {
+                             spinnerModal.hide();
+                             alert('Failed to delete the item.');
+                        }
+                        const rowToDelete = document.getElementById(`row-${itemId}`);
+                        if (rowToDelete) {
+                            rowToDelete.remove();
+                        }
+                        spinnerModal.hide();
+                    })
+                    .catch(error => { 
+                        spinnerModal.hide();
+                        alert('Failed to delete the item.');
+                    });
+                }
+                catch (e) {
+                  spinnerModal.hide();
+                  alert('Failed to delete the item.');
+                }
+            }
+        }
+    </script>
+}
