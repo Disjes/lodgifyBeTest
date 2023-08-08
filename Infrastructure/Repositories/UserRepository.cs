@@ -29,7 +29,7 @@ namespace Infrastructure.Repositories
 
         public async Task<IPagedList<User>> QueryAll(int pageNumber, int pageSize)
         {
-            return (await QueryAll()).ToPagedList(pageNumber, pageSize);
+            return _users.ToPagedList(pageNumber, pageSize);
         }
 
         public bool Remove(long id)
