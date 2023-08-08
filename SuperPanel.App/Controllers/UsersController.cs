@@ -37,7 +37,7 @@ namespace SuperPanel.App.Controllers
         }
         
         [HttpDelete("Users/Delete/{id}")]
-        public async Task<IActionResult> Delete(long id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {

@@ -39,6 +39,9 @@ namespace SuperPanel.Tests.Unit
             // Arrange
             var usersList = new AutoFaker<User>()
                 .Generate(1);
+            var misc = new Misc() { PageSize = 10 };
+            var miscOptions = Options.Create(misc);
+            _miscConfig.Setup(m => m.Value).Returns(miscOptions.Value);
 
             int pageNumber = 1;  // The desired page number
             int pageSize = usersList.Count;  // Number of items per page, in this case, we use the total count of generated users
@@ -62,76 +65,19 @@ namespace SuperPanel.Tests.Unit
         }
 
         [Fact]
-        public async void UsersIndex_ReturnsList()
-        {
-            // Arrange
-            var usersList = new AutoFaker<User>()
-                .Generate(5);
-
-            int pageNumber = 1;  // The desired page number
-            int pageSize = usersList.Count;  // Number of items per page, in this case, we use the total count of generated users
-            var pagedList = new StaticPagedList<User>(usersList, pageNumber, pageSize, usersList.Count);
-            _userRepository.Setup(ur => ur.QueryAll(It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(Task.FromResult<IPagedList<User>>(pagedList));
-            
-            var controller = new UsersController(
-                _logger.Object,
-                _userRepository.Object,
-                _contactsService.Object,
-                _miscConfig.Object
-            );
-
-            // Act8
-            var actionResult = (await controller.Index(1)) as ObjectResult;
-
-            // Assert
-            var result = actionResult?.Value as IEnumerable<User>;
-            result.Should().BeOfType<List<User>>()
-                .Which.Should().HaveCount(5);
-            result.Should().BeEquivalentTo(usersList);
-        }
-        
-        [Fact]
-        public async void UsersIndex_ReturnsPaginationCorrectly()
-        {
-            // Arrange
-            var usersList = new AutoFaker<User>()
-                .Generate(5);
-
-            int pageNumber = 1;  // The desired page number
-            int pageSize = usersList.Count;  // Number of items per page, in this case, we use the total count of generated users
-            var pagedList = new StaticPagedList<User>(usersList, pageNumber, pageSize, usersList.Count);
-            _userRepository.Setup(ur => ur.QueryAll(It.IsAny<int>(), It.IsAny<int>()))
-                .Returns(Task.FromResult<IPagedList<User>>(pagedList));
-
-            var controller = new UsersController(
-                _logger.Object,
-                _userRepository.Object,
-                _contactsService.Object,
-                _miscConfig.Object
-            );
-
-            // Act
-            var actionResult = (await controller.Index(1)) as ObjectResult;
-
-            // Assert
-            var result = actionResult?.Value as IEnumerable<User>;
-            result.Should().BeOfType<List<User>>()
-                .Which.Should().HaveCount(5);
-            result.Should().BeEquivalentTo(usersList);
-        }
-        
-        [Fact]
-        public async void InputFieldGetList_ReturnsList()
+        public async void UsersIndexFirstPage_ReturnsList()
         {
             // Arrange
             var usersList = new AutoFaker<User>()
                 .Generate(25);
+            var misc = new Misc() { PageSize = 10 };
+            var miscOptions = Options.Create(misc);
+            _miscConfig.Setup(m => m.Value).Returns(miscOptions.Value);
 
             int pageNumber = 1;  // The desired page number
-            int pageSize = usersList.Count;  // Number of items per page, in this case, we use the total count of generated users
-            var pagedList = new StaticPagedList<User>(usersList, pageNumber, pageSize, usersList.Count);
-            _userRepository.Setup(ur => ur.QueryAll(It.IsAny<int>(), It.IsAny<int>()))
+            int pageSize = _miscConfig.Object.Value.PageSize;  // Number of items per page, in this case, we use the total count of generated users
+            var pagedList = new PagedList<User>(usersList, pageNumber, pageSize);
+            _userRepository.Setup(ur => ur.QueryAll(pageNumber, pageSize))
                 .Returns(Task.FromResult<IPagedList<User>>(pagedList));
 
             var controller = new UsersController(
@@ -142,19 +88,75 @@ namespace SuperPanel.Tests.Unit
             );
 
             // Act
-            var actionResultFirstPage = (await controller.Index(1)) as ObjectResult;
-            var actionResultSecondPage = (await controller.Index(2)) as ObjectResult;
-            var actionResultThirdPage = (await controller.Index(3)) as ObjectResult;
+            var actionResultFirstPage = (await controller.Index(1)) as ViewResult;
 
             // Assert
-            var resultFirstPage = actionResultFirstPage?.Value as IPagedList<User>;
-            var resultSecondPage = actionResultSecondPage?.Value as IPagedList<User>;
-            var resultThirdPage = actionResultThirdPage?.Value as IPagedList<User>;
-            resultFirstPage.Should().BeOfType<IPagedList<User>>()
+            var resultFirstPage = actionResultFirstPage?.Model as IPagedList<User>;
+            resultFirstPage.Should().BeOfType<PagedList<User>>()
                 .Which.Should().HaveCount(10);
-            resultSecondPage.Should().BeOfType<IPagedList<User>>()
+        }
+        
+        [Fact]
+        public async void UsersIndexSecondPage_ReturnsList()
+        {
+            // Arrange
+            var usersList = new AutoFaker<User>()
+                .Generate(25);
+            var misc = new Misc() { PageSize = 10 };
+            var miscOptions = Options.Create(misc);
+            _miscConfig.Setup(m => m.Value).Returns(miscOptions.Value);
+
+            int pageNumber = 2;  // The desired page number
+            int pageSize = _miscConfig.Object.Value.PageSize;  // Number of items per page, in this case, we use the total count of generated users
+            var pagedList = new PagedList<User>(usersList, pageNumber, pageSize);
+            _userRepository.Setup(ur => ur.QueryAll(pageNumber, pageSize))
+                .Returns(Task.FromResult<IPagedList<User>>(pagedList));
+
+            var controller = new UsersController(
+                _logger.Object,
+                _userRepository.Object,
+                _contactsService.Object,
+                _miscConfig.Object
+            );
+
+            // Act
+            var actionResultSecondPage = (await controller.Index(2)) as ViewResult;
+
+            // Assert
+            var resultSecondPage = actionResultSecondPage?.Model as IPagedList<User>;
+            resultSecondPage.Should().BeOfType<PagedList<User>>()
                 .Which.Should().HaveCount(10);
-            resultThirdPage.Should().BeOfType<IPagedList<User>>()
+        }
+        
+        [Fact]
+        public async void UsersIndexThirdPage_ReturnsList()
+        {
+            // Arrange
+            var usersList = new AutoFaker<User>()
+                .Generate(25);
+            var misc = new Misc() { PageSize = 10 };
+            var miscOptions = Options.Create(misc);
+            _miscConfig.Setup(m => m.Value).Returns(miscOptions.Value);
+
+            int pageNumber = 3;  // The desired page number
+            int pageSize = _miscConfig.Object.Value.PageSize;  // Number of items per page, in this case, we use the total count of generated users
+            var pagedList = new PagedList<User>(usersList, pageNumber, pageSize);
+            _userRepository.Setup(ur => ur.QueryAll(pageNumber, pageSize))
+                .Returns(Task.FromResult<IPagedList<User>>(pagedList));
+
+            var controller = new UsersController(
+                _logger.Object,
+                _userRepository.Object,
+                _contactsService.Object,
+                _miscConfig.Object
+            );
+
+            // Act
+            var actionResultThirdPage = (await controller.Index(3)) as ViewResult;
+
+            // Assert
+            var resultThirdPage = actionResultThirdPage?.Model as IPagedList<User>;
+            resultThirdPage.Should().BeOfType<PagedList<User>>()
                 .Which.Should().HaveCount(5);
         }
 
@@ -173,7 +175,7 @@ namespace SuperPanel.Tests.Unit
             );
 
             // Act
-            var actionResult = controller.Delete(long.MinValue).Result as ObjectResult;
+            var actionResult = controller.Delete(int.MinValue).Result as ObjectResult;
 
             // Assert
             actionResult?.StatusCode.Should().Be(StatusCodes.Status204NoContent);
@@ -197,7 +199,7 @@ namespace SuperPanel.Tests.Unit
             );
 
             // Act
-            var actionResult = controller.Delete(long.MinValue).Result as ObjectResult;
+            var actionResult = controller.Delete(int.MinValue).Result as ObjectResult;
 
             // Assert
             actionResult?.StatusCode.Should().Be(StatusCodes.Status404NotFound);

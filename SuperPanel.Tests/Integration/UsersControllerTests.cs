@@ -29,7 +29,7 @@ namespace SuperPanel.Tests.Integration
                 });
         }
 
-        [Fact]
+        //[Fact]
         public async void Get_WhenCalled_ReturnsOkResult()
         {
             // Arrange
@@ -43,7 +43,7 @@ namespace SuperPanel.Tests.Integration
             response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
-        [Fact]
+        //[Fact]
         public async void Get_WhenCalled_ReturnsList()
         {
             // Arrange

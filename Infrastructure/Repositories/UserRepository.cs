@@ -17,6 +17,11 @@ namespace Infrastructure.Repositories
                 .ToList();
         }
 
+        public async Task<User> FindById(int id)
+        {
+            return _users.FirstOrDefault(u => u.Id == id);
+        }
+
         public async Task<IEnumerable<User>> QueryAll()
         {
             return _users;
@@ -24,14 +29,13 @@ namespace Infrastructure.Repositories
 
         public async Task<IPagedList<User>> QueryAll(int pageNumber, int pageSize)
         {
-            return _users.ToPagedList(pageNumber, pageSize);
+            return (await QueryAll()).ToPagedList(pageNumber, pageSize);
         }
 
-        public void Remove(long id)
+        public bool Remove(long id)
         {
             var user = _users.Find(u => u.Id == id);
-            _users.Remove(user);
+            return _users.Remove(user);
         }
-
     }
 }

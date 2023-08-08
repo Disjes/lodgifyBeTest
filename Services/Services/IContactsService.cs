@@ -6,6 +6,6 @@ namespace Services.Services
     {
         Task<Contact> GetContactByIdAsync(long id);
         Task<Contact> GetContactByEmailAsync(string email);
-        Task DeleteContact(long id);
+        Task DeleteContact(int id);
     }
 }

@@ -39,21 +39,22 @@ namespace Services.Services
             }
         }
 
-        public async Task DeleteContact(long id)
+        public async Task DeleteContact(int id)
         {
             try
             {
                 //Getting contact's external id
-                var user = (await _userRepository.QueryAll()).FirstOrDefault(u => u.Id == id);
+                var user = await _userRepository.FindById(id);
                 if (user == null)
                 {
                     throw new NotFoundException("User does not exist.");
                 }
-                Contact contact = await _contactsApiClient.GetUserContactByEmailAsync(user.Email);
-                
+
                 //Whether the contact exists or not we should always delete the local user from InMemory user's list
                 _userRepository.Remove(user.Id);
-                
+
+                var contact = await _contactsApiClient.GetUserContactByEmailAsync(user.Email);
+
                 //If contact was null means it doesn't exist so we shouldn't do the GDPRRequest, returning here
                 if (contact == null)
                 {
@@ -61,7 +62,12 @@ namespace Services.Services
                 }
 
                 //GDRP Request for equivalent user's contact
-                _contactsApiClient.GDPRRequest(contact.Id);
+                var gdprContact = await _contactsApiClient.GDPRRequest(contact.Id);
+
+            }
+            catch (NotFoundException ex)
+            {
+                throw;
             }
             catch (Exception ex)
             {

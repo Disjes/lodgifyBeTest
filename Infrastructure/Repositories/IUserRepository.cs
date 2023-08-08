@@ -5,7 +5,8 @@ namespace Infrastructure.Repositories;
 
 public interface IUserRepository
 {
+    Task<User> FindById(int id);
     Task<IEnumerable<User>> QueryAll();
     Task<IPagedList<User>> QueryAll(int pageNumber, int pageSize);
-    void Remove(long id);
+    bool Remove(long id);
 }
