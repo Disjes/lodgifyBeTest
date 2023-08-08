@@ -54,5 +54,24 @@ namespace SuperPanel.App.Controllers
                 return Conflict("There was an error trying to delete the user");
             }
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> BatchGDPR(int[] ids)
+        {
+            try
+            {
+                await _contactsService.BatchGDPR(ids);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ex.Message};{ids}");
+                return Conflict("There was an error trying to delete the user");
+            }
+        }
     }
 }

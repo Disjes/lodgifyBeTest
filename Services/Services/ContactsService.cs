@@ -74,5 +74,24 @@ namespace Services.Services
                 throw new ContactsApiException("There was an error trying to delete the contact");
             }
         }
+
+        public async Task BatchGDPR(int[] ids)
+        {
+            try
+            {
+                foreach (var id in ids)
+                {
+                    var user = await _userRepository.FindById(id);
+                    //We get the external api contact to get the external Id for the GDPR call
+                    var contact = await _contactsApiClient.GetUserContactByEmailAsync(user.Email);
+                    //GDRP Request for equivalent user's contact
+                    var gdprContact = await _contactsApiClient.GDPRRequest(contact.Id);
+                }
+            }
+            catch (ContactsApiException ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
