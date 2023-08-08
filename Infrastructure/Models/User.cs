@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SuperPanel.App.Models
+﻿namespace Infrastructure.Models
 {
     public class User
     {
